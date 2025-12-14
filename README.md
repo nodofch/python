@@ -20,7 +20,3 @@ Anda dipersilakan untuk melihat dan menggunakan kode yang ada.
 1.  Clone repositori ini: `git clone https://github.com/nodofch/python.git`
 2.  Instal dependensi (jika ada): `pip install -r requirements.txt` 
 3.  Jalankan file Python yang Anda inginkan: `python nama_file.py`
-
-## 📧 Hubungi Saya
-
-Jika Anda tertarik untuk berdiskusi tentang proyek atau Python, silakan hubungi saya melalui [Isi dengan email Anda atau tautan media sosial Anda].
