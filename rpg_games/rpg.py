@@ -3,7 +3,6 @@ import time
 import sys
 
 def show_loading(seconds=3, message="Memproses"):
-    # Simple loading animation that prints dots for the given duration
     print(f"{message}", end='', flush=True)
     interval = 0.5
     steps = max(1, int(seconds / interval))
@@ -22,7 +21,6 @@ class Monster:
         self.defense = defense + (level * 1)
         self.exp = 0
         self.next_level = 100
-        # loot table: list of tuples (item_name or None, weight)
         self.loot = []
         self.is_defending = False
 
@@ -38,7 +36,7 @@ class Monster:
         self.defense += 2
         self.exp = 0
         self.next_level = int(self.next_level * 1.5)
-        print(f"✨ {self.nama} NAIK KE LEVEL {self.level}! Statistik meningkat!")
+        print(f"{self.nama} NAIK KE LEVEL {self.level}! Statistik meningkat!")
 
     def drop_loot(self):
         """Return a random loot item (string) or None if nothing drops."""
@@ -78,30 +76,30 @@ class Character:
         self.exp = 0
         self.next_level = int(self.next_level * 1.5)
         self.skill_ready = True
-        print(f"✨ {self.nama} NAIK KE LEVEL {self.level}! Statistik meningkat!")
+        print(f"{self.nama} NAIK KE LEVEL {self.level}! Statistik meningkat!")
 
     def use_skill(self, enemy):
         if not self.skill_ready:
-            print("⚠️ Skill belum siap!")
+            print("Skill belum siap!")
             return
-        print(f"✨ Kamu menggunakan skill: {self.skill_name}!")
+        print(f"Kamu menggunakan skill: {self.skill_name}!")
         if self.role == "Warrior":
             damage = max(0, (self.atk * 2) - enemy.defense)
             enemy.hp -= damage
             self.temp_def_penalty = 2
-            print(f"⚔️ Berserk! {enemy.nama} terkena {damage} damage. (Def kamu turun sementara)")
+            print(f"Berserk! {enemy.nama} terkena {damage} damage. (Def kamu turun sementara)")
         elif self.role == "Archer":
             damage = max(0, self.atk - (enemy.defense // 2))
             enemy.hp -= damage
-            print(f"🏹 Piercing Shot! {enemy.nama} terkena {damage} damage (mengurangi pertahanan musuh).")
+            print(f"Piercing Shot! {enemy.nama} terkena {damage} damage (mengurangi pertahanan musuh).")
         elif self.role == "Healer":
             heal = 40 + (self.level * 5)
             self.hp = min(self.max_hp, self.hp + heal)
-            print(f"💚 Divine Heal! Kamu memulihkan {heal} HP.")
+            print(f"Divine Heal! Kamu memulihkan {heal} HP.")
         elif self.role == "Assassin":
             damage = max(0, (self.atk * 3) - enemy.defense)
             enemy.hp -= damage
-            print(f"🗡️ Backstab! {enemy.nama} terkena {damage} damage (kritikal).")
+            print(f"Backstab! {enemy.nama} terkena {damage} damage (kritikal).")
         self.skill_ready = False
 
 
@@ -126,7 +124,7 @@ def pilih_karakter():
 def cari_lawan(player_level):
     daftar = ["Slime", "Goblin", "Bat", "Rat", "Orc", "Troll", "Wolf", "Skeleton", "Mage"]
     nama_musuh = random.choice(daftar)
-    level_musuh = random.randint(1, max(1, player_level)) # Level tidak akan melebihi player
+    level_musuh = random.randint(1, max(1, player_level))
 
     if nama_musuh == "Slime":
         m = Monster("Slime", level_musuh, 60, 6, 6)
@@ -166,7 +164,7 @@ def cari_lawan(player_level):
         return m
 
 def battle(player, enemy, inventory):
-    print(f"\n💥 Pertarungan Dimulai: {player.nama} ({player.role}) vs {enemy.nama} (Lvl {enemy.level})")
+    print(f"\nPertarungan Dimulai: {player.nama} ({player.role}) vs {enemy.nama} (Lvl {enemy.level})")
 
     while player.hp > 0 and enemy.hp > 0:
         player.cek_status()
@@ -177,63 +175,57 @@ def battle(player, enemy, inventory):
         show_loading(3, "Memproses aksi...")
         is_defending = False
 
-        # --- GILIRAN PLAYER ---
-        if aksi == "1": # ATTACK
-            # consider if enemy was defending
+        #GILIRAN USER
+        if aksi == "1":
             enemy_def = enemy.defense * 2 if getattr(enemy, 'is_defending', False) else enemy.defense
             damage = max(0, player.atk - enemy_def)
             enemy.hp -= damage
-            # attacking breaks enemy defend stance
             enemy.is_defending = False
-            print(f"⚔️ Kamu menyerang {enemy.nama} sebesar {damage} damage!")
-        elif aksi == "2": # DEFEND
-            print("🛡️ Kamu bersiap bertahan! (Damage musuh berkurang)")
+            print(f"Kamu menyerang {enemy.nama} sebesar {damage} damage!")
+        elif aksi == "2":
+            print("Kamu bersiap bertahan! (Damage musuh berkurang)")
             is_defending = True
-        elif aksi == "3": # SKILL
+        elif aksi == "3":
             player.use_skill(enemy)
-        elif aksi == "4": # RUN
+        elif aksi == "4":
             if random.random() > 0.5:
-                print("🏃 Kamu berhasil kabur!")
+                print("Kamu berhasil kabur!")
                 return "kabur"
             else:
-                print("❌ Gagal kabur!")
-        elif aksi == "5": # POTION
+                print("Gagal kabur!")
+        elif aksi == "5":
             if inventory.get("Potion", 0) > 0:
                 heal_amount = 30
                 player.hp = min(player.max_hp, player.hp + heal_amount)
                 inventory["Potion"] -= 1
-                print(f"🧪 Kamu minum Potion dan memulihkan {heal_amount} HP!")
+                print(f"Kamu minum Potion dan memulihkan {heal_amount} HP!")
             else:
-                print("⚠️ Tidak ada Potion di inventory!")
+                print("Tidak ada Potion di inventory!")
 
         if enemy.hp <= 0:
-            print(f"🏆 {enemy.nama} kalah!")
-            # Reward EXP
+            print(f"{enemy.nama} kalah!")
             gained_exp = 50 * enemy.level
             player.exp += gained_exp
-            print(f"✨ Kamu mendapatkan {gained_exp} EXP!")
+            print(f"Kamu mendapatkan {gained_exp} EXP!")
 
-            # Loot drop
             loot = enemy.drop_loot()
             if loot:
                 inventory[loot] = inventory.get(loot, 0) + 1
-                print(f"🎁 Loot: Kamu mendapat '{loot}'!")
+                print(f"Loot: Kamu mendapat '{loot}'!")
             else:
-                print("🎁 Loot: Tidak ada item yang didapat.")
+                print("Loot: Tidak ada item yang didapat.")
 
-            # Immediate level up per permintaan
-            print("⭐ Karena mengalahkan musuh, kamu naik 1 level!")
+            #NAIK LEVEL
+            print("Karena mengalahkan musuh, kamu naik 1 level!")
             player.level_up()
 
-            # Also check EXP-based level-up (if reached)
             if player.exp >= player.next_level:
                 player.level_up()
 
             return "menang"
 
-        # --- GILIRAN MUSUH ---
+        #GILIRAN MUSUH
         print(f"\n--- GILIRAN {enemy.nama} ---")
-        # Musuh memutuskan tindakan: attack / defend / skill
         show_loading(3, f"{enemy.nama} sedang bertindak...")
         enemy_action = random.choices(["attack", "defend", "skill"], weights=[70,20,10], k=1)[0]
 
@@ -243,21 +235,20 @@ def battle(player, enemy, inventory):
                 effective_def = effective_def * 2
             dmg_musuh = max(0, enemy.atk - effective_def)
             player.hp -= dmg_musuh
-            print(f"🔥 {enemy.nama} menyerangmu sebesar {dmg_musuh} damage!")
+            print(f"{enemy.nama} menyerangmu sebesar {dmg_musuh} damage!")
         elif enemy_action == "defend":
             enemy.is_defending = True
-            print(f"🛡️ {enemy.nama} bersiap bertahan! (Pertahanan musuh meningkat untuk giliran berikutnya)")
-        else:  # skill
+            print(f"{enemy.nama} bersiap bertahan! (Pertahanan musuh meningkat untuk giliran berikutnya)")
+        else:  
             effective_def = max(0, player.defense - player.temp_def_penalty)
             skill_dmg = max(0, int((enemy.atk * 2) - effective_def))
             player.hp -= skill_dmg
-            print(f"✨ {enemy.nama} menggunakan skill spesial dan memberikan {skill_dmg} damage!")
+            print(f"{enemy.nama} menggunakan skill spesial dan memberikan {skill_dmg} damage!")
 
-        # reset temp penalties
         player.temp_def_penalty = 0
 
         if player.hp <= 0:
-            print("💀 Kamu kalah... Game Over.")
+            print("Kamu kalah... Game Over.")
             return "kalah"
         
 def main():
@@ -274,11 +265,11 @@ def main():
         show_loading(3, "Memproses pilihan...")
 
         if menu == "1":
-            player.skill_ready = True  # reset skill availability each encounter
+            player.skill_ready = True  
             musuh = cari_lawan(player.level)
             hasil = battle(player, musuh, inventory)
             if hasil == "kalah": break
-            player.hp = player.max_hp # Reset HP setelah battle agar bisa lanjut
+            player.hp = player.max_hp 
         elif menu == "2":
             player.cek_status()
             print(f"Inventory: {inventory}")
